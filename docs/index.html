@@ -62,7 +62,7 @@
     // Based on https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
     
     const canvas = document.getElementById('fluid-canvas');
-    const gl = canvas.getContext('webgl');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     
     if (!gl) {
       alert('WebGL not supported on this browser/device');
@@ -77,6 +77,20 @@
       SPLAT_RADIUS: 0.5,
     };
     
+    // Check if floating point textures are available
+    let ext = {
+      formatRGBA: null,
+      formatRG: null,
+      formatR: null,
+      halfFloatTexType: null,
+      supportLinearFiltering: false
+    };
+    
+    ext.halfFloatTexType = gl.UNSIGNED_BYTE;
+    ext.formatRGBA = gl.RGBA;
+    ext.formatRG = gl.RGBA;
+    ext.formatR = gl.RGBA;
+    
     // Vertex shader source code (for all programs)
     const baseVertexShader = `
       precision highp float;
@@ -89,12 +103,12 @@
       uniform vec2 texelSize;
       
       void main () {
-        vUv = aPosition * 0.5 + 0.5;
-        vL = vUv - vec2(texelSize.x, 0.0);
-        vR = vUv + vec2(texelSize.x, 0.0);
-        vT = vUv + vec2(0.0, texelSize.y);
-        vB = vUv - vec2(0.0, texelSize.y);
-        gl_Position = vec4(aPosition, 0.0, 1.0);
+          vUv = aPosition * 0.5 + 0.5;
+          vL = vUv - vec2(texelSize.x, 0.0);
+          vR = vUv + vec2(texelSize.x, 0.0);
+          vT = vUv + vec2(0.0, texelSize.y);
+          vB = vUv - vec2(0.0, texelSize.y);
+          gl_Position = vec4(aPosition, 0.0, 1.0);
       }
     `;
     
@@ -105,7 +119,7 @@
       varying vec2 vUv;
       
       void main () {
-        gl_FragColor = texture2D(uTexture, vUv);
+          gl_FragColor = texture2D(uTexture, vUv);
       }
     `;
     
@@ -120,11 +134,11 @@
       varying vec2 vUv;
       
       void main () {
-        vec2 p = vUv - point.xy;
-        p.x *= aspectRatio;
-        vec3 splat = exp(-dot(p, p) / radius) * color;
-        vec3 base = texture2D(uTarget, vUv).xyz;
-        gl_FragColor = vec4(base + splat, 1.0);
+          vec2 p = vUv - point.xy;
+          p.x *= aspectRatio;
+          vec3 splat = exp(-dot(p, p) / radius) * color;
+          vec3 base = texture2D(uTarget, vUv).xyz;
+          gl_FragColor = vec4(base + splat, 1.0);
       }
     `;
     
@@ -135,9 +149,9 @@
       varying vec2 vUv;
       
       void main () {
-        vec3 c = texture2D(uTexture, vUv).rgb;
-        float a = max(c.r, max(c.g, c.b));
-        gl_FragColor = vec4(c, a);
+          vec3 c = texture2D(uTexture, vUv).rgb;
+          float a = max(c.r, max(c.g, c.b));
+          gl_FragColor = vec4(c, a);
       }
     `;
     
@@ -152,8 +166,8 @@
       varying vec2 vUv;
       
       void main () {
-        vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
-        gl_FragColor = dissipation * texture2D(uSource, coord);
+          vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
+          gl_FragColor = dissipation * texture2D(uSource, coord);
       }
     `;
     
@@ -242,7 +256,7 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.FLOAT, null);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
       
       return texture;
     }
@@ -412,6 +426,11 @@
       
       requestAnimationFrame(update);
     }
+
+    // Add a click to create initial splats
+    setTimeout(() => {
+      addSplat(0.5, 0.5, 0, 0);
+    }, 100);
     
     // Start the animation loop
     requestAnimationFrame(update);
