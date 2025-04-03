@@ -11,19 +11,23 @@ export default defineConfig({
     },
   },
   base: '/portfolio/', // Set base path for GitHub Pages
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    // Fix for GitHub Pages
+    assetsDir: 'assets',
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        // Ensure the proper path for assets
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
+  },
   server: {
     port: 3000,
     open: true,
-  },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    sourcemap: false,
-    // Fix for GitHub Pages - ensure asset paths are correct
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
   },
 });
