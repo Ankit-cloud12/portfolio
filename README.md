@@ -1,59 +1,87 @@
-# Portfolio Website with Fluid Cursor Effect
+# Fluid Cursor Portfolio Demo
 
-This repository contains a portfolio website template featuring a fluid, interactive cursor effect that creates a dynamic visual experience as users navigate through the site.
+A minimalist portfolio template featuring an interactive WebGL-based fluid cursor effect. This project demonstrates a visually engaging cursor that creates fluid simulations as you move around the page.
 
-## SplashCursor Component
+## Features
 
-The core of this project is the `SplashCursor` React component that implements a WebGL-based fluid simulation that follows the mouse cursor. This creates a unique, engaging user experience by adding subtle visual feedback to user interactions.
+- **WebGL Fluid Simulation**: Interactive cursor that creates a fluid simulation effect
+- **Responsive Design**: Works on all device sizes
+- **Optimized Performance**: Efficient rendering even on less powerful devices
+- **Customizable**: Easily configurable cursor properties
 
-### Features
+## Live Demo
 
-- Fluid dynamics simulation using WebGL shaders
-- Responsive to mouse movements and clicks
-- Customizable properties (colors, intensity, etc.)
-- Works on both desktop and mobile devices
-- Zero dependencies beyond React
-- Optimized for performance
+Check out the live demo at [https://ankit-cloud12.github.io/portfolio/](https://ankit-cloud12.github.io/portfolio/)
 
-### Usage
+## Technologies Used
 
-To use the SplashCursor component in your React application:
+- React
+- TypeScript
+- WebGL for the fluid dynamics simulation
+- TailwindCSS for styling
+- Vite for fast development and building
 
-```jsx
-import { SplashCursor } from './components/ui/splash-cursor';
+## Getting Started
 
-function App() {
-  return (
-    <div>
-      <SplashCursor />
-      {/* Your application content */}
-    </div>
-  );
-}
-```
+### Prerequisites
+
+- Node.js (v14 or newer)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/Ankit-cloud12/portfolio.git
+   cd portfolio
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Start the development server
+   ```bash
+   npm run dev
+   ```
+
+4. Build for production
+   ```bash
+   npm run build
+   ```
+
+## How It Works
+
+The fluid simulation is based on Navier-Stokes equations implemented in WebGL shaders. The cursor movement creates disturbances in the fluid which are then rendered in real-time.
 
 ## Customization
 
-The component accepts various props to customize its behavior:
+You can customize the SplashCursor behavior by modifying the parameters in `src/components/ui/splash-cursor.tsx`.
 
-```jsx
-<SplashCursor 
+```tsx
+<SplashCursor
   SIM_RESOLUTION={128}
-  DYE_RESOLUTION={1440}
   DENSITY_DISSIPATION={3.5}
   VELOCITY_DISSIPATION={2}
+  PRESSURE={0.1}
+  PRESSURE_ITERATIONS={20}
+  CURL={3}
   SPLAT_RADIUS={0.2}
   SPLAT_FORCE={6000}
   SHADING={true}
+  COLORFUL={true}
   COLOR_UPDATE_SPEED={10}
   BACK_COLOR={{ r: 0.5, g: 0, b: 0 }}
+  TRANSPARENT={true}
 />
 ```
 
-## Technology
+## License
 
-- React
-- WebGL for fluid simulation
-- TypeScript for type safety
+This project is open source and available under the MIT license.
 
-This component is part of a larger portfolio website template that can be extended with additional features and customizations.
+## Acknowledgements
+
+- Inspired by various WebGL fluid simulations
+- Built with React and Vite
